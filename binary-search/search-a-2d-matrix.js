@@ -30,9 +30,9 @@
  * @return {boolean}
  */
 var searchMatrix = function(matrix, target) {
-    let mRows = matrix.length;
-    let nColumns = matrix[0].length;
-    let numberOfCells = mRows * nColumns;
+    const mRows = matrix.length;
+    const nColumns = matrix[0].length;
+    const numberOfCells = mRows * nColumns;
     let leftPointer = 0;
     let rightPointer = numberOfCells - 1;
 
