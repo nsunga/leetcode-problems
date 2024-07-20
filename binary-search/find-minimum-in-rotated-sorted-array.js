@@ -40,19 +40,19 @@
  */
 var findMin = function(nums) {
     // set left and right bounds
-    let left = 0
-    let right = nums.length - 1;
-            
+    let leftpointer = 0;
+    let rightpointer = nums.length - 1;
+
     // left and right both converge to the minimum index;
     // DO NOT use left <= right because that would loop forever
-    while (left < right) {
+    while (leftpointer < rightpointer) {
         // find the middle value between the left and right bounds (their average);
         // can equivalently do: mid = left + (right - left) // 2,
         // if we are concerned left + right would cause overflow (which would occur
         // if we are searching a massive array using a language like Java or C that has
         // fixed size integer types)
-        const mid = left + Math.floor((right - left) / 2);
-                    
+        const midpointer = leftpointer + Math.floor((rightpointer - leftpointer)/2);
+
         // the main idea for our checks is to converge the left and right bounds on the start
         // of the pivot, and never disqualify the index for a possible minimum value.
 
@@ -60,7 +60,7 @@ var findMin = function(nums) {
         // and would have a specific branch for if nums[mid] == target.
         // we do not have a specific target here, so we just have simple if/else.
                     
-        if (nums[mid] > nums[right]) {
+        if (nums[midpointer] > nums[rightpointer]) {
             // we KNOW the pivot must be to the right of the middle:
             // if nums[mid] > nums[right], we KNOW that the
             // pivot/minimum value must have occurred somewhere to the right
@@ -76,7 +76,7 @@ var findMin = function(nums) {
             // one number to the right, so we can use mid + 1 and
             // never consider mid again; we know there is at least
             // one value smaller than it on the right
-            left = mid + 1
+            leftpointer = midpointer + 1;
         } else {
             // here, nums[mid] <= nums[right]:
             // we KNOW the pivot must be at mid or to the left of mid:
@@ -95,10 +95,10 @@ var findMin = function(nums) {
             // therefore, we know it is possible for the mid index to store a smaller
             // value than at least one other index in the list (at right), so we do
             // not discard it by doing right = mid - 1. it still might have the minimum value.
-            right = mid;
+            rightpointer = midpointer;
         }
     }
-            
+
     // at this point, left and right converge to a single index (for minimum value) since
     // our if/else forces the bounds of left/right to shrink each iteration:
 
@@ -112,5 +112,5 @@ var findMin = function(nums) {
 
     // so we shrink the left/right bounds to one value,
     // without ever disqualifying a possible minimum
-    return nums[left]
+    return nums[leftpointer];
 };
