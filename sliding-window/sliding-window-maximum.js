@@ -34,29 +34,43 @@
  * @return {number[]}
  */
 var maxSlidingWindow = function(nums, k) {
-    const output = [];
-    const queue = [];
-    let left = 0;
-    let right = 0;
+    // Time: O(n)
+    const result = [];
+    const deque = []; // storing indices of array nums
+    let [left, right] = [0, 0];
 
     while (right < nums.length) {
-        while (queue && nums[queue[queue.length - 1]] < nums[right]) {
-            queue.pop();
+        // we can only push at the end of the deque
+        // when items ahead are all greater than the
+        // current item that is intended to be pushed
+        //
+        // this is a monotonic decreasing queue
+        while (deque.length && nums[deque[deque.length - 1]] < nums[right]) {
+            deque.pop();
         }
 
-        queue.push(right);
+        deque.push(right);
 
-        if (left > queue[0]) {
-            queue.shift();
+        // we shift the first element in the queue
+        // as our window shifts or grows in size
+        if (left > deque[0]) {
+            deque.shift();
         }
 
-        if ((right + 1) >= k) {
-            output.push(nums[queue[0]]);
+        // once the right pointer grows in size
+        // this is tied to the window growing in size
+        // once the window is of size k, then we should
+        // always add to the result
+        if (right + 1 >= k) {
+            // since the idea is a montonic decreasing queue,
+            // the first element in the queue will always hold
+            // the maximum we want
+            result.push(nums[deque[0]]);
             left = left + 1;
         }
 
         right = right + 1;
     }
 
-    return output;
+    return result;
 };
