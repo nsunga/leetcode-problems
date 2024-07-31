@@ -51,17 +51,18 @@ var reverseList = function(head) {
 
 // RECURSIVE SOL - goes to the very end, then reverses
 // var reverseList = function(head) {
-//     // Special case...
-//     if (head == null || head.next == null) {
+//     // Time: O(n) - have to check each node
+//     // Space: O(n) - call stack increases linearly with the amount of nodes
+//     if (head === null || head.next === null) {
 //         return head;
 //     }
-//     // Create a new node to call the function recursively and we get the reverse linked list...
-//     const newHead = reverseList(head.next);
-//     // Set head node as head.next.next...
+
+//     const previousNode = reverseList(head.next);
+//     // 4->5->Null => Null<-4<-5
 //     head.next.next = head;
-//     //set head's next to be null...
 //     head.next = null;
-//     return newHead;     // Return the reverse linked list...
+
+//     return previousNode;
 // };
 
 // RECURSIVE SOL That seems more intuitive - Reverses as it goes down the list
