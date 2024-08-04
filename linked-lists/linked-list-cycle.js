@@ -53,6 +53,11 @@ var hasCycle = function(head) {
     // Lets say one person is so fast that they
     // lap the other person
     // At some point, they will intersect
+
+    // Why fastpointer && fastpointer.next?
+    // If there is no loop, fastpointer will eventually reach null
+    // fastpointer.next is necessary since fastpointer is jumping two spaces
+    // It cannot jump two spaces if the first space doesnt exist
     while (fastpointer && fastpointer.next) {
         slowpointer = slowpointer.next;
         fastpointer = fastpointer.next.next;
