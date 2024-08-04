@@ -44,11 +44,15 @@
  * @return {boolean}
  */
 var hasCycle = function(head) {
-    // Time: O(n)
+    // Time: O(n) where n is the length of the cycle - which could be the list
     // Space: O(1)
     let slowpointer = head;
     let fastpointer = head;
 
+    // Imagine two people on a track
+    // Lets say one person is so fast that they
+    // lap the other person
+    // At some point, they will intersect
     while (fastpointer && fastpointer.next) {
         slowpointer = slowpointer.next;
         fastpointer = fastpointer.next.next;
