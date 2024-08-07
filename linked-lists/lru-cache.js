@@ -44,53 +44,58 @@ var Node = function(key, val) {
     this.val = val;
     this.prev = null;
     this.next = null;
-}
+};
 
 /**
  * @param {number} capacity
  */
 var LRUCache = function(capacity) {
-    this.capacity = capacity;
-    this.cache = new Map();
-    this.head = new Node(0, 0);
-    this.tail = new Node(0, 0);
+    this.head = new Node();
+    this.tail = new Node();
     this.head.next = this.tail;
     this.tail.prev = this.head;
+    this.capacity = capacity;
+    this.cache = new Map();
 };
+
+// remove node from linked list
+LRUCache.prototype.removeFromList = function(node) {
+    const previousNode = node.prev;
+    const nextNode = node.next;
+
+    previousNode.next = nextNode;
+    nextNode.prev = previousNode;
+}
+
+// add node at the head of the linked list
+// Our defintion of most recently used will be tied to inserting at the head
+LRUCache.prototype.addToList = function(node) {
+    const nextNodeFromHead = this.head.next;
+    nextNodeFromHead.prev = node;
+    node.next = nextNodeFromHead;
+    node.prev = this.head;
+    this.head.next = node;
+}
 
 /** 
  * @param {number} key
  * @return {number}
  */
 LRUCache.prototype.get = function(key) {
+    // if this key is in the map,
+    // then we have to re-order the node tied to this key
+    // this node is now the most recently used
     if (this.cache.has(key)) {
-        this.remove(this.cache.get(key));
-        this.insert(this.cache.get(key));
+        const nodeFromCache = this.cache.get(key);
 
-        return this.cache.get(key).val;
+        this.removeFromList(nodeFromCache);
+        this.addToList(nodeFromCache);
+
+        return nodeFromCache.val;
     }
 
     return -1;
 };
-
-// remove node from linked list
-LRUCache.prototype.remove = function(node) {
-    const nextNode = node.next;
-    const prevNode = node.prev;
-
-    nextNode.prev = prevNode;
-    prevNode.next = nextNode;
-}
-
-// insert node at the head of the linked list
-// Our defintion of most recently used will be tied to inserting at the head
-LRUCache.prototype.insert = function(node) {
-    const tempNode = this.head.next;
-    node.next = tempNode;
-    tempNode.prev = node;
-    this.head.next = node;
-    node.prev = this.head;
-}
 
 /** 
  * @param {number} key 
@@ -98,22 +103,29 @@ LRUCache.prototype.insert = function(node) {
  * @return {void}
  */
 LRUCache.prototype.put = function(key, value) {
+    // we have this key already but we want to update its node
+    // so we remove the node from the list
+    // and do an "update" via adding the new node to the list
+    // and updating the key to the new node
     if (this.cache.has(key)) {
-        this.remove(this.cache.get(key));
+        const oldNodeFromCache = this.cache.get(key);
+        this.removeFromList(oldNodeFromCache);
     }
 
+    const node = new Node(key, value);
+
     // add it to hash map
-    this.cache.set(key, new Node(key, value));
     // add it to linked list
     // Our defintion of most recently used will be tied to inserting at the head
-    this.insert(this.cache.get(key));
+    this.cache.set(key, node);
+    this.addToList(node);
 
+    // our eviction or definition of least used will be the tail node
+    // remove node from linkedlist
+    // remove node from hash map
     if (this.cache.size > this.capacity) {
-        // our eviction or definition of least used will be the tail node
         const lru = this.tail.prev;
-        // remove node from linkedlist
-        this.remove(lru);
-        // remove node from hash map
+        this.removeFromList(lru);
         this.cache.delete(lru.key);
     }
 };
