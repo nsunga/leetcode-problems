@@ -43,6 +43,7 @@ var reverseKGroup = function(head, k) {
 
     while (true) {
         const kthNode = getKthNode(groupPrev, k);
+        console.log('kth node: ', kthNode ? kthNode.val : null);
 
         if (kthNode === null) {
             break;
@@ -54,6 +55,13 @@ var reverseKGroup = function(head, k) {
         let prev = kthNode.next;
         let curr = groupPrev.next;
 
+        // what is the outcome of reversing one group?
+        // 1 -> 2 -> 3 -> 4 k = 2
+        // One iteration
+        // 1 -> 3 -> 4
+        // 2 ---^ // curr is at 2, prev is 1, groupNext is 3
+        // Two iteration
+        // 2 -> 1 -> 3 -> 4 // curr is at 3, prev is at 2 groupNext is 3 and we break
         while (curr !== groupNext) {
             const temp = curr.next;
             curr.next = prev;
@@ -61,9 +69,11 @@ var reverseKGroup = function(head, k) {
             curr = temp;
         }
 
+        console.log('groupPrev before: ', groupPrev.val);
         const temp = groupPrev.next;
         groupPrev.next = kthNode;
         groupPrev = temp;
+        console.log('groupPrev after: ', groupPrev.val);
     }
 
     return dummy.next;
